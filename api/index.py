@@ -16,12 +16,14 @@ app.add_middleware(
 # Load marks data
 with open("q-vercel-python.json", "r") as file:  
     marks_list = json.load(file)
-    # print(marks_list)
 
 # Convert list to a dictionary for fast lookup
-marks_data = {entry["name"]: entry["marks"] for entry in marks_list}
+marks_data = {entry["name"]: entry for entry in marks_list}
 
 @app.get("/api")
 def get_marks(name: list[str] = Query([])):
-    result = [marks_data.get(n, None) for n in name]
+    """
+    Get student marks by name. If no name is provided, return an empty list.
+    """
+    result = [marks_data.get(n, {"name": n, "marks": None}) for n in name]
     return {"marks": result}
